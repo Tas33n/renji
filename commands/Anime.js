@@ -5,7 +5,7 @@ function config(){
         "commandMap": {
             "anime": {
                 "more": "",
-                "des": "request anime data",
+                "des": "request anime full data",
                 "func": "anime"
             }
         },
@@ -24,13 +24,18 @@ async function anime(event,api) {
     var request = require("request")
     var arg = event.body.slice(global.config.prefix.length).trim().split(/ +/);
     if (!arg[1]) {
-    let { data } = await axios.get('https://gogoanime.herokuapp.com/search?keyw=naruto')
-    var title = data[0]["animeTitle"],
-        status = data[0]["status"],
-        id = data[0]["animeId"],
-        img = data[0]["animeImg"]
+    let { data } = await axios.get('https://gogoanime.herokuapp.com/anime-details/tokyo-ghoul')
+    var title = data.animeTitle,
+		type = data.type,
+		releasedDate = data.releasedDate,
+        status = data.status,
+		otherNames = data.otherNames,
+		synopsis = data.synopsis,
+        totalEpisodes = data.totalEpisodes,
+		genres = data.genres,
+        img = data.animeImg
         api.sendMessage({
-            body: '----Anime info----\n\n' + `Name: ${title}\n` + `Anime-id: ${id}\n` + `${status}\n`,
+            body: '----Anime Details----\n\n' + `Name: ${title}\n` + `Type: ${type}\n` + `ReleasedDate: ${releasedDate}\n` + `Status: ${status}\n` + `OtherNames: ${otherNames}\n` + `TotalEpisodes: ${totalEpisodes}\n` + `Genres: ${genres}\n\n` + `Synopsis: ${synopsis}\n`,
             attachment: (await axios({
                 url: img,
                 method: "GET", 
@@ -40,13 +45,18 @@ async function anime(event,api) {
     } else {
     try {
         var keyw = arg.slice(1).join(" ")
-        let { data } = await axios.get(`https://gogoanime.herokuapp.com/search?keyw=${keyw}`)
-        var title = data[0]["animeTitle"],
-        status = data[0]["status"],
-        id = data[0]["animeId"],
-        img = data[0]["animeImg"]
+        let { data } = await axios.get(`https://gogoanime.herokuapp.com/anime-details/${keyw}`)
+        var title = data.animeTitle,
+		type = data.type,
+		releasedDate = data.releasedDate,
+        status = data.status,
+		otherNames = data.otherNames,
+		synopsis = data.synopsis,
+        totalEpisodes = data.totalEpisodes,
+		genres = data.genres,
+        img = data.animeImg
         api.sendMessage({
-            body: '----Anime info----\n' + `Name: ${title}\n` + `Anime-id: ${id}\n` + `${status}\n\n to get full details use .animsrc anime-id`,
+            body: '----Anime Details----\n\n' + `Name: ${title}\n` + `Type: ${type}\n` + `ReleasedDate: ${releasedDate}\n` + `Status: ${status}\n` + `OtherNames: ${otherNames}\n` + `TotalEpisodes: ${totalEpisodes}\n` + `Genres: ${genres}\n\n` + `Synopsis: ${synopsis}\n`,
             attachment: (await axios({
                 url: img,
                 method: "GET", 
@@ -54,7 +64,7 @@ async function anime(event,api) {
             })).data
         }, event.threadID ,event.messageID);
     } catch {
-    api.sendMessage("Anime not found or don't exist", event.threadID, event.messageID)
+    api.sendMessage("Anime not found or AnimeId is wrong", event.threadID, event.messageID)
     }
     }
 }
