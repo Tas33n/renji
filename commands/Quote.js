@@ -5,7 +5,7 @@ function config(){
         "commandMap": {
             "quote": {
                 "more": "",
-                "des": "request anime quote",
+                "des": "request anime full data",
                 "func": "quote"
             }
         },
@@ -25,16 +25,12 @@ async function quote(event,api) {
     var arg = event.body.slice(global.config.prefix.length).trim().split(/ +/);
     if (!arg[1]) {
     let { data } = await axios.get('https://api.rei.my.id/v3/quotes')
-    var quot = data.quote,
-        anime = data.anime,
-        name = data.name
+    var qt = data.quote,
+        nm = data.name,
+        an = data.anime
         api.sendMessage({
-            body: ``Quote: ${quot}\n` + `Anime: ${anime}\n` + `Name : ${name}\n\n`,
-            .data
-        }, event.threadID ,event.messageID);
-    }  catch {
-    api.sendMessage("null", event.threadID, event.messageID)
-    }
+            body: `Quote: ${qt}\n\n` + `~ ${nm}\n`,
+            }, event.threadID ,event.messageID);
     }
 }
 module.exports = {
